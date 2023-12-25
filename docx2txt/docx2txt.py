@@ -84,8 +84,12 @@ def process(docx, img_dir=None):
             text += xml2text(zipf.read(fname))
 
     # get main text
-    doc_xml = 'word/document.xml'
-    text += xml2text(zipf.read(doc_xml))
+    # files created in Office online sometimes have
+    # document2.xml instead of document.xml
+    document_xmls = 'word/document[0-9]*.xml'
+    for fname in filelist:
+        if re.match(document_xmls, fname):
+            text += xml2text(zipf.read(fname))
 
     # get footer text
     # there can be 3 footer files in the zip
